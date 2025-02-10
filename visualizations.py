@@ -9,10 +9,10 @@ def generate_calendar_data():
     """Generate data for calendar heatmap"""
     habits_df = dm.load_habits_data()
     completion_df = dm.load_completion_data()
-    
+
     dates = utils.get_last_n_days(30)
     data = []
-    
+
     for date in dates:
         completed = len(completion_df[completion_df['date'] == date])
         total = len(habits_df)
@@ -24,17 +24,17 @@ def generate_calendar_data():
             'date': date,
             'completion_rate': completion_rate
         })
-    
+
     return pd.DataFrame(data)
 
 def plot_calendar_heatmap(data):
-    """Create calendar heatmap visualization"""
+    """Create calendar heatmap visualization with grid layout"""
     # Convert dates to datetime objects
     data['date'] = pd.to_datetime(data['date'])
-    
+
     # Create calendar heatmap
     fig = go.Figure()
-    
+
     # Add heatmap trace
     fig.add_trace(go.Heatmap(
         x=[d.day for d in data['date']],
@@ -44,8 +44,8 @@ def plot_calendar_heatmap(data):
         showscale=True,
         name='Completion Rate'
     ))
-    
-    # Update layout
+
+    # Update layout with grid styling
     fig.update_layout(
         title='Monthly Habit Completion Rate',
         xaxis_title='Day of Month',
@@ -54,10 +54,27 @@ def plot_calendar_heatmap(data):
         xaxis=dict(
             tickmode='array',
             ticktext=list(range(1, 32)),
-            tickvals=list(range(1, 32))
-        )
+            tickvals=list(range(1, 32)),
+            gridcolor='rgba(128, 128, 128, 0.2)',
+            showgrid=True,
+            dtick=1
+        ),
+        yaxis=dict(
+            gridcolor='rgba(128, 128, 128, 0.2)',
+            showgrid=True
+        ),
+        plot_bgcolor='white'
     )
-    
+
+    # Add grid lines
+    for i in range(32):
+        fig.add_shape(
+            type="line",
+            x0=i-0.5, x1=i-0.5,
+            y0=-0.5, y1=0.5,
+            line=dict(color="rgba(128, 128, 128, 0.2)", width=1)
+        )
+
     return fig
 
 def generate_completion_data():
