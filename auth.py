@@ -27,14 +27,14 @@ def login_page():
                     st.session_state.authenticated = True
                     st.session_state.user_id = user.id
                     st.success("Logged in successfully!")
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error("Invalid email or password")
 
-    # Navigation button instead of markdown link
+    # Navigation button
     if st.button("Don't have an account? Sign up"):
-        st.experimental_set_query_params(page="signup")
-        st.experimental_rerun()
+        st.query_params["page"] = "signup"
+        st.rerun()
 
 def signup_page():
     st.title("Sign Up")
@@ -71,9 +71,9 @@ def signup_page():
                 st.session_state.authenticated = True
                 st.session_state.user_id = user.id
                 st.success("Account created successfully!")
-                st.experimental_rerun()
+                st.rerun()
 
-    # Navigation button instead of markdown link
+    # Navigation button
     if st.button("Already have an account? Login"):
-        st.experimental_set_query_params(page="login")
-        st.experimental_rerun()
+        st.query_params["page"] = "login"
+        st.rerun()
