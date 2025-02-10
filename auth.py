@@ -13,13 +13,15 @@ def login_page():
     st.title("Login")
 
     with st.form("login_form"):
+        first_name = st.text_input("First Name")
+        last_name = st.text_input("Last Name")
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
         submit = st.form_submit_button("Login")
 
         if submit:
-            if not email or not password:
-                st.error("Please enter both email and password")
+            if not first_name or not last_name or not email or not password:
+                st.error("Please fill in all fields")
                 return
 
             with app.app_context():
