@@ -29,16 +29,33 @@ def generate_calendar_data():
 
 def plot_calendar_heatmap(data):
     """Create calendar heatmap visualization"""
-    fig = px.line(data, x='date', y='completion_rate',
-                  title='30-Day Completion Rate',
-                  labels={'completion_rate': 'Completion Rate (%)',
-                         'date': 'Date'})
+    # Convert dates to datetime objects
+    data['date'] = pd.to_datetime(data['date'])
     
+    # Create calendar heatmap
+    fig = go.Figure()
+    
+    # Add heatmap trace
+    fig.add_trace(go.Heatmap(
+        x=[d.day for d in data['date']],
+        y=[d.strftime('%B') for d in data['date']],
+        z=data['completion_rate'],
+        colorscale='RdYlGn',
+        showscale=True,
+        name='Completion Rate'
+    ))
+    
+    # Update layout
     fig.update_layout(
-        xaxis_title="Date",
-        yaxis_title="Completion Rate (%)",
-        showlegend=False,
-        height=300
+        title='Monthly Habit Completion Rate',
+        xaxis_title='Day of Month',
+        yaxis_title='Month',
+        height=400,
+        xaxis=dict(
+            tickmode='array',
+            ticktext=list(range(1, 32)),
+            tickvals=list(range(1, 32))
+        )
     )
     
     return fig
