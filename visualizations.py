@@ -10,7 +10,7 @@ def generate_calendar_data():
     habits_df = dm.load_habits_data()
     completion_df = dm.load_completion_data()
 
-    dates = utils.get_last_n_days(30)
+    dates = utils.get_last_n_days(7)  # Changed to 7 days for weekly view
     data = []
 
     for date in dates:
@@ -47,10 +47,10 @@ def plot_calendar_heatmap(data):
 
     # Update layout with grid styling
     fig.update_layout(
-        title='Monthly Habit Completion Rate',
-        xaxis_title='Day of Month',
-        yaxis_title='Month',
-        height=400,
+        title='Weekly Habit Completion Rate',
+        xaxis_title='Day of Week',
+        yaxis_title='Week',
+        height=200,  # Reduced height for weekly view
         xaxis=dict(
             tickmode='array',
             ticktext=list(range(1, 32)),
