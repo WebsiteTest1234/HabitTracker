@@ -8,7 +8,7 @@ from styles import apply_styles
 from auth import login_page, signup_page
 from app import app, init_db
 from study_planner import study_planner_page
-from models import User
+from models import User, Journal, db
 
 def welcome_page():
     st.title(f"Welcome {st.session_state.user_email}! 👋")
