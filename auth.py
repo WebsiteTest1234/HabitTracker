@@ -9,6 +9,7 @@ def is_valid_email(email):
     return bool(re.match(pattern, email))
 
 def login_page():
+    st.title("Welcome to UnStuck")
     st.title("Login")
 
     with st.form("login_form"):
