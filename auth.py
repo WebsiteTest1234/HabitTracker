@@ -1,6 +1,7 @@
 import streamlit as st
 from models import User, db
 import re
+from app import app
 
 def is_valid_email(email):
     """Check if email is valid"""
@@ -20,14 +21,15 @@ def login_page():
                 st.error("Please enter both email and password")
                 return
 
-            user = User.query.filter_by(email=email).first()
-            if user and user.check_password(password):
-                st.session_state.authenticated = True
-                st.session_state.user_id = user.id
-                st.success("Logged in successfully!")
-                st.experimental_rerun()
-            else:
-                st.error("Invalid email or password")
+            with app.app_context():
+                user = User.query.filter_by(email=email).first()
+                if user and user.check_password(password):
+                    st.session_state.authenticated = True
+                    st.session_state.user_id = user.id
+                    st.success("Logged in successfully!")
+                    st.experimental_rerun()
+                else:
+                    st.error("Invalid email or password")
 
     # Navigation button instead of markdown link
     if st.button("Don't have an account? Sign up"):
@@ -56,19 +58,20 @@ def signup_page():
                 st.error("Passwords don't match")
                 return
 
-            if User.query.filter_by(email=email).first():
-                st.error("Email already registered")
-                return
+            with app.app_context():
+                if User.query.filter_by(email=email).first():
+                    st.error("Email already registered")
+                    return
 
-            user = User(email=email)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
+                user = User(email=email)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
 
-            st.session_state.authenticated = True
-            st.session_state.user_id = user.id
-            st.success("Account created successfully!")
-            st.experimental_rerun()
+                st.session_state.authenticated = True
+                st.session_state.user_id = user.id
+                st.success("Account created successfully!")
+                st.experimental_rerun()
 
     # Navigation button instead of markdown link
     if st.button("Already have an account? Login"):
