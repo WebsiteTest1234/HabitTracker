@@ -29,7 +29,10 @@ def login_page():
             else:
                 st.error("Invalid email or password")
 
-    st.markdown("Don't have an account? [Sign up](/?page=signup)")
+    # Navigation button instead of markdown link
+    if st.button("Don't have an account? Sign up"):
+        st.experimental_set_query_params(page="signup")
+        st.experimental_rerun()
 
 def signup_page():
     st.title("Sign Up")
@@ -67,4 +70,7 @@ def signup_page():
             st.success("Account created successfully!")
             st.experimental_rerun()
 
-    st.markdown("Already have an account? [Login](/?page=login)")
+    # Navigation button instead of markdown link
+    if st.button("Already have an account? Login"):
+        st.experimental_set_query_params(page="login")
+        st.experimental_rerun()
