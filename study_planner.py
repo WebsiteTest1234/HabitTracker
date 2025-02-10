@@ -51,10 +51,9 @@ def study_planner_page():
     """, unsafe_allow_html=True)
 
     # Navigation tabs with emojis
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3 = st.tabs([
         "📅 Schedule", 
         "✅ To-Do List", 
-        "✍️ Journaling", 
         "⏱️ Study Timer"
     ])
 
@@ -115,29 +114,6 @@ def study_planner_page():
                     st.markdown(f"Priority: **{todo['priority']}**")
 
     with tab3:
-        st.subheader("Study Journal")
-        journal_entry = st.text_area(
-            "Today's Study Reflection", 
-            placeholder="Reflect on your study session...\n- What did you learn?\n- What challenges did you face?\n- What will you focus on next?"
-        )
-
-        if st.button("Save Journal Entry"):
-            if journal_entry:
-                if 'journal_entries' not in st.session_state:
-                    st.session_state.journal_entries = []
-                st.session_state.journal_entries.append({
-                    'date': datetime.now().strftime('%Y-%m-%d'),
-                    'entry': journal_entry
-                })
-                st.success("Journal entry saved!")
-
-        if 'journal_entries' in st.session_state and st.session_state.journal_entries:
-            st.subheader("Previous Entries")
-            for entry in reversed(st.session_state.journal_entries):
-                with st.expander(f"Entry from {entry['date']}"):
-                    st.write(entry['entry'])
-
-    with tab4:
         st.subheader("Study Timer")
         col1, col2 = st.columns([2, 1])
 

@@ -89,8 +89,27 @@ def main():
         study_planner_page()
     elif st.session_state.current_page == "Journaling":
         st.title("✍️ Journaling")
-        # Journaling content will be added later
-        st.info("Journaling feature coming soon!")
+        
+        journal_entry = st.text_area(
+            "Today's Journal Entry", 
+            placeholder="Write your thoughts, reflections, or plans for the day..."
+        )
+
+        if st.button("Save Journal Entry"):
+            if journal_entry:
+                if 'journal_entries' not in st.session_state:
+                    st.session_state.journal_entries = []
+                st.session_state.journal_entries.append({
+                    'date': datetime.now().strftime('%Y-%m-%d'),
+                    'entry': journal_entry
+                })
+                st.success("Journal entry saved!")
+
+        if 'journal_entries' in st.session_state and st.session_state.journal_entries:
+            st.subheader("Previous Entries")
+            for entry in reversed(st.session_state.journal_entries):
+                with st.expander(f"Entry from {entry['date']}"):
+                    st.write(entry['entry'])
     elif st.session_state.current_page == "Calendar":
         st.title("📅 Habit Calendar")
         
