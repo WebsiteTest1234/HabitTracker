@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Planner</title>
+    <style>
+        body {
+            background-color: pink;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #userSection {
+            display: none;
+        }
+        button {
+            background-color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .timer {
+            font-size: 3em;
+            margin: 20px;
+        }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById("signupBtn").addEventListener("click", () => {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => alert("Signup successful! Log in now."))
+                .catch(error => alert(error.message));
+        });
+
+        document.getElementById("loginBtn").addEventListener("click", () => {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    document.getElementById("userSection").style.display = "block";
+                    document.getElementById("welcomeMessage").textContent = `Welcome back, ${userCredential.user.email}!`;
+                })
+                .catch(error => alert(error.message));
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => {
+                document.getElementById("userSection").style.display = "none";
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Study Planner</h1>
+    <div>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="signupBtn">Sign Up</button>
+        <button id="loginBtn">Login</button>
+    </div>
+    <div id="userSection">
+        <h2 id="welcomeMessage"></h2>
+        <h3>What do you need help with today?</h3>
+        <button onclick="location.href='journaling.html'">Journaling</button>
+        <button onclick="location.href='calendar.html'">Schedule</button>
+        <button onclick="location.href='todo.html'">To-Do List</button>
+        <button onclick="location.href='pomodoro.html'">Studying & Procrastination</button>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</body>
+</html>
