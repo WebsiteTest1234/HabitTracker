@@ -1,0 +1,61 @@
+from models import User, Journal, db
+import streamlit as st
+from werkzeug.security import generate_password_hash
+
+# Sign Up Form
+def signup_page():
+    st.title("Sign Up")
+
+    with st.form("signup_form"):
+        first_name = st.text_input("First Name")
+        last_name = st.text_input("Last Name")
+        email = st.text_input("Email")
+        password = st.text_input("Password", type="password")
+        password_confirm = st.text_input("Confirm Password", type="password")
+        submit = st.form_submit_button("Sign Up")
+
+        if submit:
+            if not first_name or not last_name or not email or not password or not password_confirm:
+                st.error("Please fill in all fields")
+                return
+
+            if password != password_confirm:
+                st.error("Passwords do not match")
+                return
+
+            # Check if user already exists
+            user = User.query.filter_by(email=email).first()
+            if user:
+                st.error("Email already registered")
+                return
+
+            # Create new user
+            new_user = User(
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                password_hash=generate_password_hash(password),
+            )
+            db.session.add(new_user)
+            db.session.commit()
+
+            # Save to session state
+            st.session_state.authenticated = True
+            st.session_state.user_id = new_user.id
+            st.session_state.user_email = new_user.email
+            st.session_state.first_name = new_user.first_name
+            st.session_state.current_page = "login"
+
+            st.success("Signed up successfully!")
+            st.rerun()
+
+# User Model (Move Outside UI Code)
+from flask_login import UserMixin
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    habits = db.relationship('Habit', backref='user', lazy=True)
