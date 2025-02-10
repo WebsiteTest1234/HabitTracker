@@ -8,7 +8,7 @@ from flask_login import current_user
 
 def load_habits_data():
     """Load habits data for current user"""
-    if not current_user.is_authenticated:
+    if not hasattr(current_user, 'is_authenticated') or not current_user.is_authenticated:
         return pd.DataFrame(columns=['habit_name', 'category', 'created_date'])
 
     habits = Habit.query.filter_by(user_id=current_user.id).all()
@@ -22,7 +22,7 @@ def load_habits_data():
 
 def load_completion_data():
     """Load completion data for current user"""
-    if not current_user.is_authenticated:
+    if not hasattr(current_user, 'is_authenticated') or not current_user.is_authenticated:
         return pd.DataFrame(columns=['habit_name', 'date', 'completed'])
 
     completions = Completion.query.join(Habit).filter(Habit.user_id == current_user.id).all()
