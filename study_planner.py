@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import time
 import random
 from models import db, User
 from app import app
@@ -133,13 +134,33 @@ def study_planner_page():
                 </style>
             """, unsafe_allow_html=True)
             
+            if 'last_update' not in st.session_state:
+                st.session_state.last_update = datetime.now()
+            
+            current_time = datetime.now()
+            time_diff = (current_time - st.session_state.last_update).total_seconds()
+            
+            if time_diff >= 1:
+                st.session_state.time_remaining = max(0, st.session_state.time_remaining - int(time_diff))
+                st.session_state.last_update = current_time
+            
             minutes = st.session_state.time_remaining // 60
             seconds = st.session_state.time_remaining % 60
             st.markdown(f"<div class='big-timer'>{minutes:02d}:{seconds:02d}</div>", unsafe_allow_html=True)
             
+            if st.session_state.time_remaining <= 0:
+                st.session_state.timer_running = False
+                st.success("Time's up!")
+                st.rerun()
+            
             if st.button("Stop Timer", use_container_width=True):
                 st.session_state.timer_running = False
                 st.rerun()
+            
+            # Add auto-refresh
+            st.empty().markdown("⏱️", unsafe_allow_html=True)
+            time.sleep(0.1)
+            st.rerun()
             
             # Motivation message in timer mode
             st.markdown("---")
