@@ -7,9 +7,10 @@ import visualizations as viz
 from styles import apply_styles
 from auth import login_page, signup_page
 from app import app, init_db
+from study_planner import study_planner_page
 
 def main():
-    st.set_page_config(page_title="Habit Tracker", layout="wide")
+    st.set_page_config(page_title="Habit & Study Tracker", layout="wide")
     apply_styles()
 
     # Initialize database within app context
@@ -26,7 +27,6 @@ def main():
 
     # Check if user is authenticated
     if not st.session_state.authenticated:
-        # Handle login/signup routing
         params = st.experimental_get_query_params()
         page = params.get("page", ["login"])[0]
 
@@ -36,26 +36,34 @@ def main():
             login_page()
         return
 
-    st.title("🎯 Habit Tracker")
+    # Sidebar navigation
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Go to", ["Habit Tracker", "Study Planner"])
 
     # Add logout button in sidebar
-    with st.sidebar:
-        if st.button("Logout"):
-            st.session_state.authenticated = False
-            st.session_state.user_id = None
-            st.experimental_rerun()
+    if st.sidebar.button("Logout"):
+        st.session_state.authenticated = False
+        st.session_state.user_id = None
+        st.rerun()
 
-    # Rest of the dashboard code remains the same
+    # Route to selected page
+    if page == "Study Planner":
+        study_planner_page()
+        return
+
+    # Habit Tracker page (original content)
+    st.title("🎯 Habit Tracker")
+
     if 'habits_data' not in st.session_state:
         st.session_state.habits_data = dm.load_habits_data()
 
     # Sidebar for adding new habits
     with st.sidebar:
         st.header("Add New Habit")
-        new_habit = st.text_input("Habit Name")
+        new_habit = st.text_input("Habit Name", key="new_habit_input")
         habit_category = st.selectbox("Category", ["Health", "Productivity", "Learning", "Other"])
 
-        if st.button("Add Habit"):
+        if st.button("Add Habit", key="add_habit_button"):
             if new_habit:
                 with app.app_context():
                     dm.add_habit(new_habit, habit_category)

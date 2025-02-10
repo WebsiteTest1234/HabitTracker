@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Planner</title>
+    <script type="module">
+        // Firebase Configuration
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // User Registration
+        document.getElementById("signupBtn").addEventListener("click", () => {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    alert("Signup successful! Log in now.");
+                })
+                .catch((error) => alert(error.message));
+        });
+        
+        // User Login
+        document.getElementById("loginBtn").addEventListener("click", () => {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    alert("Login successful!");
+                    document.getElementById("userSection").style.display = "block";
+                })
+                .catch((error) => alert(error.message));
+        });
+        
+        // User Logout
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => {
+                alert("Logged out successfully.");
+                document.getElementById("userSection").style.display = "none";
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Study Planner</h1>
+    <div>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="signupBtn">Sign Up</button>
+        <button id="loginBtn">Login</button>
+    </div>
+    <div id="userSection" style="display: none;">
+        <h2>Welcome to Your Study Planner!</h2>
+        <button id="logoutBtn">Logout</button>
+        
+        <!-- Digital Study Calendar -->
+        <h3>Study Calendar</h3>
+        <input type="date" id="studyDate">
+        <input type="text" id="studyTask" placeholder="Enter study task">
+        <button onclick="addStudyTask()">Add Task</button>
+        <ul id="studyList"></ul>
+        
+        <!-- Motivation Box -->
+        <h3>Need Motivation?</h3>
+        <button onclick="showMotivationBox()">Get Motivated</button>
+        <div id="motivationBox" style="display:none;">
+            <p id="motivationMessage"></p>
+            <button onclick="hideMotivationBox()">Close</button>
+        </div>
+        
+        <!-- Goal-Setting Section -->
+        <h3>Set Your Goals</h3>
+        <input type="text" id="goalInput" placeholder="Enter your goal">
+        <button onclick="addGoal()">Add Goal</button>
+        <ul id="goalList"></ul>
+    </div>
+    
+    <script>
+        function addStudyTask() {
+            let date = document.getElementById("studyDate").value;
+            let task = document.getElementById("studyTask").value;
+            if (date && task) {
+                let listItem = document.createElement("li");
+                listItem.textContent = `${date}: ${task}`;
+                document.getElementById("studyList").appendChild(listItem);
+            }
+        }
+        
+        function showMotivationBox() {
+            let messages = [
+                "Start with just 5 minutes!",
+                "Done is better than perfect!",
+                "Break tasks into small steps!"
+            ];
+            document.getElementById("motivationMessage").textContent = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById("motivationBox").style.display = "block";
+        }
+        
+        function hideMotivationBox() {
+            document.getElementById("motivationBox").style.display = "none";
+        }
+        
+        function addGoal() {
+            let goal = document.getElementById("goalInput").value;
+            if (goal) {
+                let listItem = document.createElement("li");
+                listItem.textContent = goal;
+                document.getElementById("goalList").appendChild(listItem);
+            }
+        }
+    </script>
+</body>
+</html>
