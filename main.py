@@ -11,7 +11,7 @@ from study_planner import study_planner_page
 from models import User, Journal, db
 
 def welcome_page():
-    st.title(f"Welcome {st.session_state.user_email}! 👋")
+    st.title(f"Welcome {st.session_state.first_name}! 👋")
 
     st.subheader("What do you need help with today?")
 

@@ -27,6 +27,7 @@ def login_page():
                     st.session_state.authenticated = True
                     st.session_state.user_id = user.id
                     st.session_state.user_email = user.email
+                    st.session_state.first_name = user.first_name
                     st.session_state.current_page = "login"  # This will show welcome page
                     st.success("Logged in successfully!")
                     st.rerun()
@@ -42,13 +43,15 @@ def signup_page():
     st.title("Sign Up")
 
     with st.form("signup_form"):
+        first_name = st.text_input("First Name")
+        last_name = st.text_input("Last Name")
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
         password_confirm = st.text_input("Confirm Password", type="password")
         submit = st.form_submit_button("Sign Up")
 
         if submit:
-            if not email or not password or not password_confirm:
+            if not first_name or not last_name or not email or not password or not password_confirm:
                 st.error("Please fill in all fields")
                 return
 
@@ -65,7 +68,7 @@ def signup_page():
                     st.error("Email already registered")
                     return
 
-                user = User(email=email)
+                user = User(email=email, first_name=first_name, last_name=last_name)
                 user.set_password(password)
                 db.session.add(user)
                 db.session.commit()
