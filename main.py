@@ -11,8 +11,11 @@ from study_planner import study_planner_page
 from models import User, Journal, db
 
 def welcome_page():
+    if 'first_name' not in st.session_state:
+        st.session_state.first_name = ""
+        
     st.title(f"Welcome {st.session_state.first_name}! 👋")
-
+    
     st.subheader("What do you need help with today?")
 
     col1, col2, col3 = st.columns(3)
