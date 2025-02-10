@@ -97,19 +97,24 @@ def main():
 
         if st.button("Save Journal Entry"):
             if journal_entry:
-                if 'journal_entries' not in st.session_state:
-                    st.session_state.journal_entries = []
-                st.session_state.journal_entries.append({
-                    'date': datetime.now().strftime('%Y-%m-%d'),
-                    'entry': journal_entry
-                })
-                st.success("Journal entry saved!")
+                with app.app_context():
+                    new_entry = Journal(
+                        user_id=st.session_state.user_id,
+                        content=journal_entry,
+                        date=datetime.now()
+                    )
+                    db.session.add(new_entry)
+                    db.session.commit()
+                    st.success("Journal entry saved!")
 
-        if 'journal_entries' in st.session_state and st.session_state.journal_entries:
-            st.subheader("Previous Entries")
-            for entry in reversed(st.session_state.journal_entries):
-                with st.expander(f"Entry from {entry['date']}"):
-                    st.write(entry['entry'])
+        with app.app_context():
+            entries = Journal.query.filter_by(user_id=st.session_state.user_id)\
+                .order_by(Journal.date.desc()).all()
+            if entries:
+                st.subheader("Previous Entries")
+                for entry in entries:
+                    with st.expander(f"Entry from {entry.date.strftime('%Y-%m-%d %H:%M')}"):
+                        st.write(entry.content)
     elif st.session_state.current_page == "Calendar":
         st.title("📅 Habit Calendar")
         
