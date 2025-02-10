@@ -7,12 +7,12 @@ def apply_styles():
         .stCheckbox {
             font-size: 1.2rem;
             padding: 10px;
-            background-color: #f8f9fa;
+            background-color: #FFE4E1;
             border-radius: 5px;
             margin: 5px 0;
         }
         .stCheckbox:hover {
-            background-color: #e9ecef;
+            background-color: #FFB6C1;
         }
         .stMetric {
             background-color: #f8f9fa;

@@ -1,11 +1,12 @@
+
 [server]
 headless = true
 address = "0.0.0.0"
 port = 5000
 
 [theme]
-primaryColor = "#FF4B4B"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F0F2F6"
-textColor = "#262730"
+primaryColor = "#FF69B4"  # Hot pink
+backgroundColor = "#FFF0F5"  # Lavender blush
+secondaryBackgroundColor = "#FFE4E1"  # Misty rose
+textColor = "#C71585"  # Deep pink
 font = "sans serif"
