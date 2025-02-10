@@ -65,9 +65,16 @@ def main():
             login_page()
         return
 
-    # Show logout button in sidebar
+    # Show navigation in sidebar
     with st.sidebar:
         st.title("Navigation")
+
+        # Back button (show only if not on welcome page)
+        if st.session_state.current_page != "login":
+            if st.button("🏠 Back to Home", key="back_button"):
+                st.session_state.current_page = "login"  # Return to welcome page
+                st.rerun()
+
         if st.button("🚪 Logout", key="logout_button"):
             st.session_state.authenticated = False
             st.session_state.user_id = None
