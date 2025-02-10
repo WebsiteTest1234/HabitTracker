@@ -26,6 +26,8 @@ def login_page():
                 if user and user.check_password(password):
                     st.session_state.authenticated = True
                     st.session_state.user_id = user.id
+                    st.session_state.user_email = user.email
+                    st.session_state.current_page = "login"  # This will show welcome page
                     st.success("Logged in successfully!")
                     st.rerun()
                 else:
@@ -70,6 +72,8 @@ def signup_page():
 
                 st.session_state.authenticated = True
                 st.session_state.user_id = user.id
+                st.session_state.user_email = user.email
+                st.session_state.current_page = "login"  # This will show welcome page
                 st.success("Account created successfully!")
                 st.rerun()
 

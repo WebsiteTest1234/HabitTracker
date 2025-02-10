@@ -8,6 +8,29 @@ from styles import apply_styles
 from auth import login_page, signup_page
 from app import app, init_db
 from study_planner import study_planner_page
+from models import User
+
+def welcome_page():
+    st.title(f"Welcome {st.session_state.user_email}! 👋")
+
+    st.subheader("What do you need help with today?")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if st.button("📊 Habit Tracker", use_container_width=True):
+            st.session_state.current_page = "Habit Tracker"
+            st.rerun()
+
+    with col2:
+        if st.button("📚 Study Planner", use_container_width=True):
+            st.session_state.current_page = "Study Planner"
+            st.rerun()
+
+    with col3:
+        if st.button("✍️ Journaling", use_container_width=True):
+            st.session_state.current_page = "Journaling"
+            st.rerun()
 
 def main():
     st.set_page_config(page_title="Habit & Study Tracker", layout="wide")
@@ -25,6 +48,8 @@ def main():
         st.session_state.authenticated = False
     if 'user_id' not in st.session_state:
         st.session_state.user_id = None
+    if 'user_email' not in st.session_state:
+        st.session_state.user_email = None
     if 'current_page' not in st.session_state:
         st.session_state.current_page = "login"
 
@@ -40,24 +65,25 @@ def main():
             login_page()
         return
 
-    # Navigation after authentication
-    st.sidebar.title("Navigation")
-    st.session_state.current_page = st.sidebar.radio(
-        "Go to",
-        ["Habit Tracker", "Study Planner"],
-        key="navigation"
-    )
-
-    # Logout button
-    if st.sidebar.button("Logout", key="logout_button"):
-        st.session_state.authenticated = False
-        st.session_state.user_id = None
-        st.session_state.current_page = "login"
-        st.rerun()
+    # Show logout button in sidebar
+    with st.sidebar:
+        st.title("Navigation")
+        if st.button("🚪 Logout", key="logout_button"):
+            st.session_state.authenticated = False
+            st.session_state.user_id = None
+            st.session_state.user_email = None
+            st.session_state.current_page = "login"
+            st.rerun()
 
     # Display selected page
-    if st.session_state.current_page == "Study Planner":
+    if st.session_state.current_page == "login":
+        welcome_page()
+    elif st.session_state.current_page == "Study Planner":
         study_planner_page()
+    elif st.session_state.current_page == "Journaling":
+        st.title("✍️ Journaling")
+        # Journaling content will be added later
+        st.info("Journaling feature coming soon!")
     else:
         # Habit Tracker page
         st.title("🎯 Habit Tracker")
