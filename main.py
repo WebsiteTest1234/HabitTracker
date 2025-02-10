@@ -19,7 +19,7 @@ def welcome_page():
 
     with col1:
         if st.button("📊 Habit Tracker", use_container_width=True):
-            st.session_state.current_page = "Habit Tracker"
+            st.session_state.current_page = "Calendar"
             st.rerun()
 
     with col2:
@@ -91,6 +91,22 @@ def main():
         st.title("✍️ Journaling")
         # Journaling content will be added later
         st.info("Journaling feature coming soon!")
+    elif st.session_state.current_page == "Calendar":
+        st.title("📅 Habit Calendar")
+        
+        # Calendar visualization
+        if 'habits_data' not in st.session_state:
+            st.session_state.habits_data = dm.load_habits_data()
+            
+        with app.app_context():
+            calendar_data = viz.generate_calendar_data()
+            fig_calendar = viz.plot_calendar_heatmap(calendar_data)
+            st.plotly_chart(fig_calendar, use_container_width=True)
+            
+        # Add button to go to habit tracker
+        if st.button("View Habit Tracker"):
+            st.session_state.current_page = "Habit Tracker"
+            st.rerun()
     else:
         # Habit Tracker page
         st.title("🎯 Habit Tracker")
